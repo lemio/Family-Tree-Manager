@@ -1,0 +1,75 @@
+.tmheading {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:18px;
+	color:#aaaaaa;
+	margin-bottom: 5px;
+}
+
+.tmmessage {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:18px;
+	color:#990000;
+}
+
+.tmtext {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:12px;
+	color:#000000;
+}
+
+.tmlisttable {
+	border-collapse: collapse;
+	border-color:#bbbbbb;
+	margin-top: 3px;
+}
+
+.tmlisttablerow {
+	padding: 5px;
+	background-color:#eeeeee;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:12px;
+	color:#000000;
+}
+
+.tmlisttablehead {
+	padding: 5px;
+	background-color:#cccccc;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-weight:bold;
+	color:#ffffff;
+}
+
+.tmedittable {
+	border-collapse: collapse;
+	border-color:#bbbbbb;
+	margin-top: 3px;
+}
+
+.tmeditlabelcol {
+	padding: 5px;
+	background-color:#cccccc;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-weight:bold;
+	color:#000000;
+}
+.tmeditinputcol {
+	padding: 5px;
+	background-color:#eeeeee;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:12px;
+	color:#000000;
+}
+
+.tmnav {
+	text-align: center;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:12px;
+	color:#000000;
+}
+
+a.tm:link { color:#000066; text-decoration:none; }	
+a.tm:visited {color: #000066; text-decoration:none; }	
+a.tm:hover {color:#0000CC; text-decoration:none; }	
+a.tm:active {color: #000066; text-decoration:none; }
