@@ -1,3 +1,6 @@
+<html>
+<head><title>RepRap family Tree</title></head>
+<body>
 <style>
 *{
 font-family: "Century Gothic", sans-serif;
@@ -7,10 +10,39 @@ font-family: "Century Gothic", sans-serif;
 }
 </style>
 <div>
-<a href="tm_customer.php">Change the database</a> (This image works only under Firefox, Internet Explorer 9, Google Chrome, and Safari)
+<a href="tm_customer.php">Change the database</a> (This image works only with Firefox, Internet Explorer 9, Google Chrome, and Safari)
 </div>
 <?php
-//header("Content-type: text/plain;");
+/*
+$node[$id]
+contains the Mysql fetched data; with the given id id is a bit random (1,2,20,35,40,41,42,43)
+$node_id[$i]
+contains the $id for the $node[] with no gaps (0,1,2,3,4...200)
+
+MYSQL Querty for making the table.
+
+CREATE TABLE IF NOT EXISTS `reprap_family` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) NOT NULL,
+  `parent_type` int(11) NOT NULL,
+  `wip` int(11) NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `author` varchar(200) NOT NULL,
+  `rel_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `autor_id` varchar(100) NOT NULL,
+  `costs` int(11) NOT NULL,
+  `url` varchar(200) NOT NULL,
+  `ip` varchar(200) NOT NULL,
+  `licence` varchar(200) NOT NULL,
+  `reprap` int(11) NOT NULL,
+  `image` varchar(200) NOT NULL,
+  `description` text NOT NULL,
+  `j` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='The family tree of RepRap' AUTO_INCREMENT=31 ;
+
+*/
+
 $begin_time = 1133308800; //(Jear 2006)
 $begin_year = 2006;
 $seconds_year = 31556926; //according to Google
@@ -30,7 +62,7 @@ $image_width = $width + 100;
 
 $grid_size = 40;
 include("connect.php");
-$query = mysql_query("SELECT *, UNIX_TIMESTAMP(reprap_family.rel_date) as release_timestamp FROM reprap_family ");
+$query = mysql_query("SELECT *, UNIX_TIMESTAMP(reprap_family.rel_date) as release_timestamp FROM reprap_family ");//ORDER BY `reprap_family`.`j` DESC");
 $i = 0;
 while($result = mysql_fetch_array($query)){
 $node[$result["id"]] = $result;
@@ -41,6 +73,8 @@ $i ++;
 $height = $grid_size*$i + 100;
 $results = $i;
 
+
+
 //giving Y coordinates 
 
 for($i=0;$i<($results)+1;$i+=2){
@@ -50,6 +84,12 @@ for($i=1;$i<($results)+1;$i+=2){
 $node[$node_id[$i]]['y'] = $height/2+($i+1)*($grid_size/2);
 }
 
+/*
+for($i=0;$i<($results)+1;$i+=1){
+$node[$node_id[$i]]['y'] = $i*($grid_size)+$grid_size;
+}
+*/
+
 for($i=0;isset($node_id[$i]);$i++){
 	if ($node[$node_id[$i]]["parent_id"] != 0){
 		$old_y = $node[$node_id[$i]]['y'];
@@ -57,6 +97,39 @@ for($i=0;isset($node_id[$i]);$i++){
 		
 	}
 }
+/*
+for($i=0;isset($node_id[$i]);$i++){
+	if ($node[$node_id[$i]]["parent_id"] != 0){
+		$old_y = $node[$node_id[$i]]['y'];
+		$new_y = $node[$node[$node_id[$i]]["parent_id"]]['y']+1*$grid_size;
+		for($j=0;isset($node_id[$j]);$j++){
+			if($new_y == $node[$node_id[$j]]['y']){
+				$collision = $node_id[$j];
+			}
+		}
+		$node[]['y'] = $old_y;
+		$node[$node_id[$i]]['y'] = $new_y;
+		
+	}
+}*/
+/*
+for($i=0;$i<($results)+1;$i+=1){
+	$count = 0;
+	for($j=0;isset($node_id[$j]);$j++){
+		if($node[$node_id[$j]]['y'] == $i*($grid_size)+$grid_size){
+			$count+=1;
+			if ($count>1){
+				$node[$node_id[$j]]['y'] = $empty_y;
+				$empty_y = 0;
+			}
+		}
+		
+	}
+	if ($count == 0){
+		$empty_y = $i*($grid_size)+$grid_size;
+	}
+}
+*/
 /*
 for($i=0;$i<($results+1);$i++){
 	$node[$node_id[$i]]['y'] = $i*($grid_size);
@@ -148,4 +221,6 @@ function print_node()
 */
 ?>
 </svg>
-(CC-BY-SA Geert Roumen (Lemio) <a href="https://github.com/lemio/Family-Tree-Manager">Github</a> inspired by Emmanuel's <a href="http://reprap.org/wiki/RepRap_Family_Tree">Family Tree</a>)
+<div>(CC-BY-SA Geert Roumen (Lemio) <a href="https://github.com/lemio/Family-Tree-Manager">Github</a> inspired by Emmanuel's <a href="http://reprap.org/wiki/RepRap_Family_Tree">Family Tree</a>)</div>
+</body>
+</html>
