@@ -30,7 +30,7 @@ $image_width = $width + 100;
 
 $grid_size = 40;
 include("connect.php");
-$query = mysql_query("SELECT *, UNIX_TIMESTAMP(reprap_family.rel_date) as release_timestamp FROM reprap_family");
+$query = mysql_query("SELECT *, UNIX_TIMESTAMP(reprap_family.rel_date) as release_timestamp FROM reprap_family ");
 $i = 0;
 while($result = mysql_fetch_array($query)){
 $node[$result["id"]] = $result;
@@ -42,12 +42,25 @@ $height = $grid_size*$i + 100;
 $results = $i;
 
 //giving Y coordinates 
+
 for($i=0;$i<($results)+1;$i+=2){
-	$node[$node_id[$i]]['y'] = $height/2-$i*($grid_size/2);
+$node[$node_id[$i]]['y'] = $height/2-$i*($grid_size/2);
 }
 for($i=1;$i<($results)+1;$i+=2){
-	$node[$node_id[$i]]['y'] = $height/2+($i+1)*($grid_size/2);
+$node[$node_id[$i]]['y'] = $height/2+($i+1)*($grid_size/2);
 }
+
+for($i=0;isset($node_id[$i]);$i++){
+	if ($node[$node_id[$i]]["parent_id"] != 0){
+		$old_y = $node[$node_id[$i]]['y'];
+		$node[$node_id[$i]]['y'] = $node[$node[$node_id[$i]]["parent_id"]]['y']+1*$grid_size;
+		
+	}
+}
+/*
+for($i=0;$i<($results+1);$i++){
+	$node[$node_id[$i]]['y'] = $i*($grid_size);
+}*/
 
 echo "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" style=\"height:$height; width:$image_width\">\n";
 
@@ -92,6 +105,18 @@ function print_node($current_node,$style){
 
 
 function print_line($parent,$child,$style){
+	switch ($child['parent_type']){
+			case 0:
+			//Derrivated from
+				$extra_style = "stroke-linecap=\"round\"";
+			break;
+			case 1:
+			//inspired by
+				$extra_style = "stroke-dasharray=\"10,10\"";
+			break;
+			case 2:
+			break;		
+		}
 	switch ($style["line_style"]){
 		case "linear":
 			echo "<line stroke-linecap=\"round\" x1=\"".$parent["x"]."\" y1=\"".$parent["y"]."\" x2=\"".$child["x"]."\" y2=\"".$child["y"]."\" style=\"".$style["line_css"]."\" />\n";
@@ -102,12 +127,12 @@ function print_line($parent,$child,$style){
 			break;
 		case "semi-linear":
 			if ($parent['y']>$child['y']){
-				echo "<line stroke-linecap=\"round\" x1=\"".$parent["x"]."\" y1=\"".$parent["y"]."\" x2=\"".($parent["x"] + ($parent['y']-$child['y']))."\" y2=\"".$child["y"]."\" style=\"".$style["line_css"]."\" />\n";
-				echo "<line stroke-linecap=\"round\" x1=\"".($parent["x"] + ($parent['y']-$child['y']))."\" y1=\"".$child["y"]."\" x2=\"".$child['x']."\" y2=\"".$child["y"]."\" style=\"".$style["line_css"]."\" />\n";
+				echo "<line stroke-dasharray=\"10,10\" stroke-linecap=\"round\" x1=\"".$parent["x"]."\" y1=\"".$parent["y"]."\" x2=\"".($parent["x"] + ($parent['y']-$child['y']))."\" y2=\"".$child["y"]."\" style=\"".$style["line_css"]."\" />\n";
+				echo "<line stroke-dasharray=\"10,10\" stroke-linecap=\"round\" x1=\"".($parent["x"] + ($parent['y']-$child['y']))."\" y1=\"".$child["y"]."\" x2=\"".$child['x']."\" y2=\"".$child["y"]."\" style=\"".$style["line_css"]."\" />\n";
 			
 			}else{
-				echo "<line stroke-linecap=\"round\" x1=\"".$parent["x"]."\" y1=\"".$parent["y"]."\" x2=\"".($parent["x"] + ($child['y']-$parent['y']))."\" y2=\"".$child["y"]."\" style=\"".$style["line_css"]."\" />\n";
-				echo "<line stroke-linecap=\"round\" x1=\"".($parent["x"] + ($child['y']-$parent['y']))."\" y1=\"".$child["y"]."\" x2=\"".$child['x']."\" y2=\"".$child["y"]."\" style=\"".$style["line_css"]."\" />\n";
+				echo "<line $extra_style  x1=\"".$parent["x"]."\" y1=\"".$parent["y"]."\" x2=\"".($parent["x"] + ($child['y']-$parent['y']))."\" y2=\"".$child["y"]."\" style=\"".$style["line_css"]."\" />\n";
+				echo "<line $extra_style  x1=\"".($parent["x"] + ($child['y']-$parent['y']))."\" y1=\"".$child["y"]."\" x2=\"".$child['x']."\" y2=\"".$child["y"]."\" style=\"".$style["line_css"]."\" />\n";
 			}
 			break;
 }
@@ -123,3 +148,4 @@ function print_node()
 */
 ?>
 </svg>
+(CC-BY-SA Geert Roumen (Lemio) <a href="https://github.com/lemio/Family-Tree-Manager">Github</a> inspired by Emmanuel's <a href="http://reprap.org/wiki/RepRap_Family_Tree">Family Tree</a>)
